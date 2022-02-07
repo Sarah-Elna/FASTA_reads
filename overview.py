@@ -86,11 +86,41 @@ def pretty_print(file_name):
         print('{} :'.format(g), genbank_dict[g])
     return ''
 
+def outgroup_match(ingroup_file, outgroup_file):
+    o_dict_sp = {}
+    o_dict_count = {}
+    sp_list = []
+    i_description = get_descriptions(ingroup_file)
+    i_result_list = descriptions_to_complete_list(i_description)
+    gene_list = get_gen_lst(i_result_list)
+    o_descriptions = get_descriptions(outgroup_file)
+    for g in gene_list:
+        o_dict_sp[g] = []
+        o_dict_count[g] = {}
+        g_count = 0
+        g_sp_lst = []
+        gene = '({})'.format(g)
+        for line in o_descriptions:
+            new_line = line.split(' ')
+            i = new_line.index('Areca')
+            species = 'A. ' + new_line[i+1]
+            if species != 'A. sp.' and species not in sp_list:
+                sp_list.append(species)                    
+            if gene in line and species not in g_sp_lst:
+                g_sp_lst.append(species)
+                g_count += 1
+        o_dict_sp[g] = g_sp_lst
+        o_dict_count[g] = '{} / {}'.format(g_count, len(sp_list))
+    print( 'gene: [outgroup specie list]', '\n', o_dict_sp, '\n', 30 * '-', '\n', 'gene: nr. sp / total sp.', '\n', o_dict_count)
+    return (30 * '-')
+
 ## Test center
-#my_file = '#interst your file name here#'
-#print(pretty_print(my_file))
-#description_list = get_descriptions(my_file)
+#my_i_file = 'all_palm_gb.fasta' # i for ingroup
+#my_o_file = 'outgroup_palm.fasta' # o for outgroup
+#print(pretty_print(my_i_file))
+#description_list = get_descriptions(my_i_file)
 #result_list = descriptions_to_complete_list(description_list)
 #sp_list = get_sp_lst(result_list)
 #gene_list = get_gen_lst(result_list)
-#print(sp_list, gene_list)
+#print('Ingroup species list:', '\n', sp_list, '\n', 30 * '-', '\n', 'Ingroup gene list:', '\n', gene_list, '\n', 30*'-', '\n')
+#print(outgroup_match(my_i_file, my_o_file))
