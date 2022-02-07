@@ -1,3 +1,5 @@
+# Overview for all the palm species
+
 def get_descriptions(file_name):
     description_list = []
     f = open(file_name, 'r')
@@ -82,9 +84,11 @@ def gen_sp_count(file_name):
 def pretty_print(file_name):
     genbank_dict = gen_sp_count(file_name)
     genes = genbank_dict.keys()
+    print( 'OUTPUT:', '\n', 30 * '-')
+    print('gene : nr. sp. / total sp.')
     for g in genes:
         print('{} :'.format(g), genbank_dict[g])
-    return ''
+    return 30 * '-'
 
 def outgroup_match(ingroup_file, outgroup_file):
     o_dict_sp = {}
@@ -106,12 +110,12 @@ def outgroup_match(ingroup_file, outgroup_file):
             species = 'A. ' + new_line[i+1]
             if species != 'A. sp.' and species not in sp_list:
                 sp_list.append(species)                    
-            if gene in line and species not in g_sp_lst:
+            if gene in line and species not in g_sp_lst and species != 'A. sp.':
                 g_sp_lst.append(species)
                 g_count += 1
         o_dict_sp[g] = g_sp_lst
         o_dict_count[g] = '{} / {}'.format(g_count, len(sp_list))
-    print( 'gene: [outgroup specie list]', '\n', o_dict_sp, '\n', 30 * '-', '\n', 'gene: nr. sp / total sp.', '\n', o_dict_count)
+    print( 'outgroup species list:', '\n', sp_list, '\n', 30*'-', '\n', 'gene: nr. sp / total sp.', '\n', o_dict_count)
     return (30 * '-')
 
 ## Test center
